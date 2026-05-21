@@ -10,41 +10,58 @@ tar, rar, zip benzeri calisan ancak sikistirma yapmayan bir arsivleme programi. 
 make
 ```
 
+Temizlemek icin:
+
+```
+make clean
+```
+
 ## Kullanim
 
 ### Birlestirme
 
-Birden fazla dosyayi tek bir arsiv dosyasinda birlestirir:
+```
+./tarsau -b dosya1.txt dosya2.txt -o arsiv.sau
+```
+
+`-o` belirtilmezse cikti dosyasi `a.sau` olur:
 
 ```
-tarsau -b dosya1 dosya2 ... -o arsiv.sau
+./tarsau -b dosya1.txt dosya2.txt
 ```
 
 ### Acma
 
-Bir arsiv dosyasini acar ve icerigini cikarir:
+Gecerli dizine acma:
 
 ```
-tarsau -a arsiv.sau [hedef_dizin]
+./tarsau -a arsiv.sau
 ```
 
-Hedef dizin belirtilmezse dosyalar mevcut dizine cikarilir.
+Belirli bir dizine acma:
+
+```
+./tarsau -a arsiv.sau hedef_dizin
+```
 
 ## Arsiv Formati (.sau)
 
 Arsiv dosyasi iki bolumden olusur:
 
-1. **Organizasyon bolumu**: Ilk 10 byte, organizasyon bolumunun toplam boyutunu icerir. Ardindan pipe (`|`) karakteri ile ayrilmis kayitlar gelir. Her kayit su bilgileri icerir:
-   - Dosya adi
-   - Dosya izinleri
-   - Dosya boyutu
+1. **Organizasyon bolumu**: Ilk 10 byte, organizasyon bolumunun toplam boyutunu icerir (sifir ile doldurulmus, ornegin `0000000035`). Ardindan pipe (`|`) karakteri ile ayrilmis kayitlar gelir: `|dosya_adi,izinler,boyut|`
 
 2. **Icerik bolumu**: Tum dosyalarin icerikleri sirasiyla yer alir.
 
+Ornek: iki dosya (t1: 100 byte, izin 644 ve t2: 50 byte, izin 755) icin:
+
+```
+0000000035|t1,644,100||t2,755,50|<t1 icerigi><t2 icerigi>
+```
+
 ## Kisitlamalar
 
-- Bir arsivde en fazla **32 dosya** bulunabilir.
-- Toplam arsiv boyutu **200 MB**'i asamaz.
+- En fazla **32 dosya** arsivlenebilir.
+- Toplam boyut **200 MB**'i asamaz.
 - Yalnizca **ASCII metin dosyalari** desteklenir.
 
 ## Gelistirme
